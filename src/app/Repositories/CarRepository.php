@@ -47,14 +47,20 @@ class CarRepository
     public function save(Car $car): void
     {
         DB::insert(
-            DB::raw('INSERT INTO cars (brand, model, price_per_day) VALUES (:brand, :model, :price_per_day)'),
+            DB::raw('
+            INSERT INTO cars (brand, model, price_per_day)
+            VALUES (:brand, :model, :price_per_day)
+        '),
             [
-                'brand' => $car->brand,
-                'model' => $car->model,
-                'price' => $car->pricePerDay
+                'brand'        => $car->brand,
+                'model'        => $car->model,
+                'price_per_day'=> $car->pricePerDay,
             ]
         );
+
+        $car->id = (int) DB::getPdo()->lastInsertId();
     }
+
 
 
     public function delete(int $id): void
