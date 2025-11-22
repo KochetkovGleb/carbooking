@@ -26,20 +26,28 @@ class CarRepository
 
     public function find(int $id): ?Car
     {
-        $row = DB::selectOne(DB::raw(''), [
-            'id' => $id
-        ]);
+        $data = DB::selectOne(
+            DB::raw('SELECT * FROM cars WHERE id = :id'),
+            ['id' => $id]
+        );
 
-        return $row
-            ? new Car($row->id, $row->brand, $row->model, $row->price_per_day)
-            : null;
+        if (!$data) {
+            return null;
+        }
+
+        return new Car(
+            $data->id,
+            $data->brand,
+            $data->model,
+            $data->price_per_day
+        );
     }
 
 
     public function save(Car $car): void
     {
         DB::insert(
-            DB::raw(''),
+            DB::raw('INSERT INTO cars (brand, model, price_per_day) VALUES (:brand, :model, :price_per_day)'),
             [
                 'brand' => $car->brand,
                 'model' => $car->model,
@@ -51,7 +59,7 @@ class CarRepository
 
     public function delete(int $id): void
     {
-        DB::delete(DB::raw(''), [
+        DB::delete(DB::raw('DELETE FROM cars WHERE id = :id'), [
             'id' => $id
         ]);
     }
