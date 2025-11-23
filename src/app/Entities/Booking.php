@@ -13,7 +13,7 @@ class Booking
     public DateTime $endDate;
 
     public function __construct(
-        int $id,
+        int $id = 0,
         int $carId,
         int $userId,
         DateTime $startDate,

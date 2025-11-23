@@ -2,44 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Entities\Car;
-use App\Repositories\CarRepository;
+use App\Services\CarService;
+use App\Dto\CarDTO;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CarController extends Controller
 {
-    private CarRepository $carsRepository;
+    private CarService $carService;
 
-    public function __construct(CarRepository $carsRepository) {
-        $this->carsRepository = $carsRepository;
+    public function __construct(CarService $carService)
+    {
+        $this->carService = $carService;
     }
 
     public function index()
     {
-        return response()->json($this->carsRepository->all());
+        $cars = $this->carService->getAllCars();
+
+        return response()->json($cars);
     }
 
-    public function show($id)
+    public function show(int $id)
     {
-        return response()->json($this->carsRepository->find($id));
+        $car = $this->carService->getCarById($id);
+        return response()->json($car);
     }
 
     public function store(Request $request)
     {
-        $data = [
-            'brand' => $request->brand,
-            'model' => $request->model,
-            'price_per_day' => $request->price_per_day
-        ];
 
-        $car = new Car(
-            0,
-            $data['brand'],
-            $data['model'],
-            $data['price_per_day']
-        );
+        $carDTO = CarDTO::fromRequest($request);
 
-        $this->carsRepository->save($car);
+
+        $car = $this->carService->createCar($carDTO);
 
         return response()->json([
             'message' => 'Car created successfully',
@@ -47,17 +43,18 @@ class CarController extends Controller
         ], 201);
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        $car = $this->carsRepository->find($id);
+        try {
+            $this->carService->deleteCar($id);
 
-        if (!$car) {
-            return response()->json(['message' => 'Car not found'], 404);
+            return response()->noContent();
+        } catch (NotFoundHttpException $e) {
+
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 404);
         }
-
-        $this->carsRepository->delete($id);
-
-        return response()->noContent();
     }
-
 }
+

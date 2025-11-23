@@ -63,10 +63,12 @@ class CarRepository
 
 
 
-    public function delete(int $id): void
+    public function delete(int $id)
     {
-        DB::delete(DB::raw('DELETE FROM cars WHERE id = :id'), [
+        $deletedRows = DB::delete(DB::raw('DELETE FROM cars WHERE id = :id'), [
             'id' => $id
         ]);
+
+        return $deletedRows > 0;
     }
 }
