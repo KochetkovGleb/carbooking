@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookingRequest;
 use App\Services\BookingService;
 use App\Dto\BookingDTO;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class BookingController extends Controller
         return response()->json($booking);
     }
 
-    public function store(Request $request)
+    public function store(BookingRequest $request)
     {
         $bookingDTO = BookingDTO::fromRequest($request);
 

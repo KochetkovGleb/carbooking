@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CarRequest;
 use App\Services\CarService;
 use App\Dto\CarDTO;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class CarController extends Controller
         return response()->json($car);
     }
 
-    public function store(Request $request)
+    public function store(CarRequest $request)
     {
 
         $carDTO = CarDTO::fromRequest($request);
