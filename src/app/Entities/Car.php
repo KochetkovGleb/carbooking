@@ -9,12 +9,8 @@ class Car
     public string $model;
     public float $pricePerDay;
 
-    public function __construct(
-        int $id,
-        string $brand,
-        string $model,
-        float $pricePerDay
-    ) {
+    public function __construct(int $id = 0, string $brand, string $model, float $pricePerDay)
+    {
         $this->id = $id;
         $this->brand = $brand;
         $this->model = $model;

@@ -56,12 +56,16 @@ class BookingRepository
                 'end_date' => $booking->endDate->format('Y-m-d'),
             ]
         );
+
+        $booking->id = (int) DB::getPdo()->lastInsertId();
     }
 
-    public function delete(int $id): void
+    public function delete(int $id)
     {
-        DB::delete(DB::raw('DELETE FROM bookings WHERE id = :id'), [
+        $deletedRows = DB::delete(DB::raw('DELETE FROM bookings WHERE id = :id'), [
             'id' => $id
         ]);
+
+        return $deletedRows > 0;
     }
 }
