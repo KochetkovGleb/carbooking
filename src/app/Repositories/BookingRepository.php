@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Dto\BookingDTO;
 use DateTime;
 use App\Entities\Booking;
 use Illuminate\Support\Facades\DB;
@@ -59,6 +60,32 @@ class BookingRepository
 
         $booking->id = (int) DB::getPdo()->lastInsertId();
     }
+
+    public function checkBookingAvailability(BookingDTO $bookingDTO): bool
+    {
+        $carId = $bookingDTO->carId;
+        $startDateNew = $bookingDTO->startDate;
+        $endDateNew = $bookingDTO->endDate;
+
+        $query = DB::select(
+            DB::raw('
+            SELECT *
+            FROM bookings
+            WHERE car_id = :car_id
+              AND NOT (
+                  end_date <= :start_date_new
+                  OR start_date >= :end_date_new
+              )
+        '), [
+                'car_id' => $carId,
+                'start_date_new' => $startDateNew,
+                'end_date_new' => $endDateNew
+            ]
+        );
+
+        return count($query) === 0;
+    }
+
 
     public function delete(int $id)
     {

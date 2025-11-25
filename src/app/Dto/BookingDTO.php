@@ -21,6 +21,8 @@ class BookingDTO
 
     public static function fromRequest(Request $request): self
     {
-        return new self($request->car_id, $request->user_id, $request->start_date, $request->end_date);
+        $userId = auth()->user()->id;
+
+        return new self($request->car_id, $userId, $request->start_date, $request->end_date);
     }
 }

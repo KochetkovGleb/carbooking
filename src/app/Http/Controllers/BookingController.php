@@ -35,10 +35,12 @@ class BookingController extends Controller
 
         $booking = $this->bookingService->createBooking($bookingDTO);
 
-        return response()->json([
-            'message' => 'Booking created successfully',
-            'booking' => $booking
-        ], 201);
+        if (!$booking) {
+            return response()->json(['message' => 'Car is already booked for these dates!'], 400);
+        }
+
+        return response()->json($booking, 201 );
+
     }
 
     public function destroy(int $id)

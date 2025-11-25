@@ -17,7 +17,8 @@ Route::prefix('cars')->group(function () {
 Route::prefix('bookings')->group(function () {
     Route::get('/', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('{id}', [BookingController::class, 'show'])->name('bookings.show');
-    Route::post('/', [BookingController::class, 'store'])->name('bookings.store');
+    Route::post('/', [BookingController::class, 'store'])->name('bookings.store')
+        ->middleware('auth:api');
     Route::delete('{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 });
 
