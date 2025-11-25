@@ -17,20 +17,30 @@ class BookingService
         $this->bookingRepository = $bookingRepository;
     }
 
-    public function createBooking(BookingDTO $bookingDTO): Booking
+    public function createBooking(BookingDTO $bookingDTO)
     {
+        $isAvailable = $this->bookingRepository->checkBookingAvailability($bookingDTO);
+
+        if (!$isAvailable) {
+            return false;
+        }
+
+        $startDate = new \DateTime($bookingDTO->startDate);
+        $endDate = new \DateTime($bookingDTO->endDate);
+
         $booking = new Booking(
             0,
             $bookingDTO->carId,
             $bookingDTO->userId,
-            new DateTime($bookingDTO->startDate),
-            new DateTime($bookingDTO->endDate)
+            $startDate,
+            $endDate
         );
 
         $this->bookingRepository->save($booking);
 
         return $booking;
     }
+
 
     public function getAllBookings(): array
     {
