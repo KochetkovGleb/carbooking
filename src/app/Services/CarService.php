@@ -37,7 +37,12 @@ class CarService
 
     public function getCarById(int $id): ?Car
     {
-        return $this->carRepository->find($id);
+        $car = $this->carRepository->find($id);
+
+        if (is_null($car)) {
+            throw new ModelNotFoundException("Car not found");
+        }
+        return $car;
     }
 
     public function deleteCar(int $id)
@@ -47,9 +52,5 @@ class CarService
         if (!$isDeleted) {
             throw new ModelNotFoundException("Car {$id} not found.");
         }
-
-        return true;
-
-
     }
 }

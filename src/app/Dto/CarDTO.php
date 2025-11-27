@@ -17,7 +17,6 @@ class CarDTO
         $this->pricePerDay = $pricePerDay;
     }
 
-    // Метод для создания объекта CarDTO из данных запроса
     public static function fromRequest(Request $request): self
     {
         return new self($request->brand, $request->model, $request->price_per_day);
