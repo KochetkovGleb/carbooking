@@ -4,6 +4,10 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use InvalidArgumentException;
+use RuntimeException;
 
 class Handler extends ExceptionHandler
 {
@@ -37,5 +41,42 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+
+        if ($request->expectsJson()) {
+
+            if ($e instanceof ModelNotFoundException) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'Resource not found',
+                ], 404);
+            }
+
+            if ($e instanceof InvalidArgumentException) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'Validation error',
+                ], 422);
+            }
+
+            if ($e instanceof RuntimeException) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'Conflict',
+                ], 409);
+            }
+
+            if ($e instanceof QueryException) {
+                return response()->json([
+                    'message' => 'Database error',
+                ], 500);
+            }
+
+            return response()->json([
+                'message' => $e->getMessage() ?: 'Server error',
+            ], 500);
+        }
+
+        return parent::render($request, $e);
     }
 }

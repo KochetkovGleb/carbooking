@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class CarRepository
 {
-
     public function all(): array
     {
         $data = DB::select(DB::raw('SELECT * FROM cars'));
@@ -22,7 +21,6 @@ class CarRepository
             $data
         );
     }
-
 
     public function find(int $id): ?Car
     {
@@ -43,8 +41,7 @@ class CarRepository
         );
     }
 
-
-    public function save(Car $car): void
+    public function save(Car $car): Car
     {
         DB::insert(
             DB::raw('
@@ -59,11 +56,11 @@ class CarRepository
         );
 
         $car->id = (int) DB::getPdo()->lastInsertId();
+
+        return $car;
     }
 
-
-
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         $deletedRows = DB::delete(DB::raw('DELETE FROM cars WHERE id = :id'), [
             'id' => $id

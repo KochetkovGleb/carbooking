@@ -22,7 +22,7 @@ class BookingService
         $isAvailable = $this->bookingRepository->checkBookingAvailability($bookingDTO);
 
         if (!$isAvailable) {
-            return false;
+            throw new \RuntimeException('Car is already booked for these dates');
         }
 
         $startDate = new \DateTime($bookingDTO->startDate);
@@ -47,19 +47,23 @@ class BookingService
         return $this->bookingRepository->all();
     }
 
-    public function getBookingById(int $id): ?Booking
+    public function getBookingById(int $id): Booking
     {
-        return $this->bookingRepository->find($id);
+        $booking = $this->bookingRepository->find($id);
+
+        if (!$booking) {
+            throw new ModelNotFoundException("Booking {$id} not found.");
+        }
+
+        return $booking;
     }
 
-    public function deleteBooking(int $id)
+    public function deleteBooking(int $id): void
     {
         $isDeleted = $this->bookingRepository->delete($id);
 
         if (!$isDeleted) {
             throw new ModelNotFoundException("Booking {$id} not found.");
         }
-
-        return true;
     }
 }

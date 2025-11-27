@@ -46,7 +46,7 @@ class BookingRepository
     }
 
 
-    public function save(Booking $booking): void
+    public function save(Booking $booking) : Booking
     {
         DB::insert(
             DB::raw('INSERT INTO bookings (car_id, user_id, start_date, end_date) VALUES (:car_id, :user_id, :start_date, :end_date)'),
@@ -59,6 +59,8 @@ class BookingRepository
         );
 
         $booking->id = (int) DB::getPdo()->lastInsertId();
+
+        return $booking;
     }
 
     public function checkBookingAvailability(BookingDTO $bookingDTO): bool
@@ -87,7 +89,7 @@ class BookingRepository
     }
 
 
-    public function delete(int $id)
+    public function delete(int $id): bool
     {
         $deletedRows = DB::delete(DB::raw('DELETE FROM bookings WHERE id = :id'), [
             'id' => $id
