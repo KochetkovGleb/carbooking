@@ -2,15 +2,16 @@
 
 namespace App\Dto;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 
 class UserDTO
 {
-    public ?string $name;  // Необязательное поле
-    public ?string $email; // Необязательное поле
-    public ?string $password; // Необязательное поле
+    public ?string $name;
+    public ?string $email;
+    public ?string $password;
 
-    // Конструктор для создания объекта UserDTO
     public function __construct(?string $name, ?string $email, ?string $password)
     {
         $this->name = $name;
@@ -18,13 +19,25 @@ class UserDTO
         $this->password = $password;
     }
 
-    // Метод для создания объекта UserDTO из данных запроса
-    public static function fromRequest(Request $request): self
+    public static function fromRegisterRequest(UserRequest $request): self
     {
+        $data = $request->validated();
+
         return new self(
-            $request->input('name', null),  // Если name не передано, будет null
-            $request->input('email', null),  // Если email не передан, будет null
-            $request->input('password', null) // Если password не передан, будет null
+            $data['name'],
+            $data['email'],
+            $data['password'],
+        );
+    }
+
+    public static function fromLoginRequest(LoginRequest $request): self
+    {
+        $data = $request->validated();
+
+        return new self(
+            null,
+            $data['email'],
+            $data['password'],
         );
     }
 }

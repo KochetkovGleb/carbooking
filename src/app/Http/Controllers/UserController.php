@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Dto\UserDTO;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\UserRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -22,9 +24,9 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $userDTO = UserDTO::fromRequest($request);
+        $userDTO = UserDTO::fromLoginRequest($request);
 
         try {
             $token = $this->userService->authenticate($userDTO);
@@ -35,21 +37,12 @@ class UserController extends Controller
         return response()->json(['token' => $token]);
     }
 
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        // Создаём DTO из данных запроса
-        $userDTO = UserDTO::fromRequest($request);
+        $dto = UserDTO::fromRegisterRequest($request);
 
-        try {
-            // Регистрируем нового пользователя через сервис
-            $user = $this->userService->createUser($userDTO);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
-        }
+        $user = $this->userService->createUser($dto);
 
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user
-        ], 201);
+        return response()->json($user, 201);
     }
 }
