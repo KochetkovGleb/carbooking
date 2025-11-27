@@ -23,6 +23,11 @@ class BookingDTO
     {
         $userId = auth()->user()->id;
 
-        return new self($request->car_id, $userId, $request->start_date, $request->end_date);
+        return new self(
+            $request->car_id,
+            $userId,
+            $request->start_date,
+            $request->end_date,
+        );
     }
 }

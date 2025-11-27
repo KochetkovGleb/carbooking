@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CarRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,9 +16,9 @@ class CarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'price_per_day' => 'required|numeric|min:1',
+            'name' => 'required|string|max:40',
+            'email' => 'required|email|max:40|unique:users,email',
+            'password' => 'required|string|min:6',
         ];
     }
 
@@ -31,4 +31,5 @@ class CarRequest extends FormRequest
             ], 422)
         );
     }
+
 }

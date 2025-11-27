@@ -31,7 +31,6 @@ class CarController extends Controller
 
     public function store(CarRequest $request)
     {
-
         $carDTO = CarDTO::fromRequest($request);
 
         $car = $this->carService->createCar($carDTO);

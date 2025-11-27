@@ -2,6 +2,7 @@
 
 namespace App\Dto;
 
+use App\Http\Requests\CarRequest;
 use Illuminate\Http\Request;
 
 class CarDTO
@@ -17,9 +18,13 @@ class CarDTO
         $this->pricePerDay = $pricePerDay;
     }
 
-    public static function fromRequest(Request $request): self
+    public static function fromRequest(CarRequest $request): self
     {
-        return new self($request->brand, $request->model, $request->price_per_day);
+        return new self(
+            $request->brand,
+            $request->model,
+            $request->price_per_day,
+        );
     }
 }
 
